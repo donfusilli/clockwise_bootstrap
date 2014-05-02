@@ -36,7 +36,7 @@ $page = "heatmap";
         fill: #000;
       }
     </style>
-    <script src="http://d3js.org/d3.v3.js"></script>
+    <script src="js/d3.v3.min.js"></script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
