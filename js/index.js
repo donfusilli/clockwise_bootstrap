@@ -698,12 +698,15 @@ $( document ).ready(function(){
 			at: "center top"
 		});
 	});
+
+/*
 	function syncDate() {
 		CURRENTDATE = $('.date-pick').datepicker( "getDate" );
 		$('.datenav_date').text(moment($('.date-pick').datepicker( "getDate" )).format('dddd, MMMM Do, YYYY'));
 		updateGraph();
 		getNote();
 	}
+
 	$('.datenav_prev').on('click', function() {
 		var prevDate = $('.date-pick').datepicker( "getDate" ).getTime() - 1000 * 60 * 60 * 24;
 		$('.date-pick').datepicker( "setDate", (new Date(prevDate)) );
@@ -726,6 +729,8 @@ $( document ).ready(function(){
 		firstDay: 1,
 		dateFormat: "DD, d MM, yy"
 	});
+*/
+
 	$('.graph_config input[type="checkbox"]').on('click', function() {
 		graphStatus.screenprobe = $("#chk_screenon").is(":checked");
 		graphStatus.appused = $("#chk_appused").is(":checked");

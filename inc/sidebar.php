@@ -11,6 +11,7 @@
     <li class="<?php echo ($page == "stacked" ? "active" : "")?>"><a href="stacked.php">Stacked</a></li>
     <li class="<?php echo ($page == "donut" ? "active" : "")?>"><a href="donut.php">Donut</a></li>
     <li class="<?php echo ($page == "pie" ? "active" : "")?>"><a href="pie.php">Pie</a></li>
+    <li class="<?php echo ($page == "heavy" ? "active" : "")?>"><a href="heavy.php">Heavy Test</a></li>
     <?php
     if(isset($_COOKIE['active_file'])){
       print "<li>Active File: ".$_COOKIE['active_file']."</li>";
