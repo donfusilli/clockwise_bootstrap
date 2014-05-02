@@ -59,7 +59,7 @@ $page = "index";
 
           <div class="row">
             <h4>Upload a CSV file</h4>
-            <input type="file" multiple="" onchange="readMultipleFile(this)" id="fileUploader" name="files">
+            <input type="file" multiple="" id="fileUploader" name="files">
           </div>
 
           <h2 class="sub-header">Participants</h2>
@@ -200,7 +200,8 @@ $page = "index";
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
     <script src="js/docs.min.js"></script>
-    <script src="jquery-csv.js"></script>
-    <script src="js/index.js"></script>
+    <script src="js/jquery-csv.js"></script>
+    <script src="js/parse.js"></script>
+    <!--<script src="js/index.js"></script>-->
   </body>
 </html>

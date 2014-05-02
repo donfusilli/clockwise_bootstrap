@@ -38,6 +38,7 @@ $page = "heatmap";
     </style>
     <script src="js/d3.v3.min.js"></script>
 
+
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -77,7 +78,11 @@ $page = "heatmap";
         <?php require_once('inc/sidebar.php'); ?>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Heatmap</h1>
-          <p>Display activity, like amount of screen on, as heatmap for each day</p>
+          <div class="row">
+            <h4>Upload a CSV file</h4>
+            <input type="file" multiple="" id="fileUploader" name="files"><br />
+            <p>Display activity, like amount of screen on, as heatmap for each day</p>
+          </div>
           <div class="row placeholders">
             <div class="col-lg-6 col-lg-3 placeholder">
               <div id="chart"></div>
@@ -91,21 +96,18 @@ $page = "heatmap";
                   buckets = 9,
                   //colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
                   colors =  ["#41b6c4","#7fcdbb","#c7e9b4","#edf8b1","#ffffd9","#C8BDD9","#A84545","#942525","#580808"],
-                  days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-                  times = ["1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p", "11p", "12p"];
+                  //days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su", "Hu"],
+                  // days of the week
+                  days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
+              // one month as example
+              var heatmapArray = [];
+              //console.log(heatmapArray);
 
-              d3.tsv("data/heatmap.tsv",
-                function(d) {
-                  return {
-                    day: +d.day,
-                    hour: +d.hour,
-                    value: +d.value
-                  };
-                },
-                function(error, data) {
+              function makeHeatmap(data, error) {
                   var colorScale = d3.scale.quantile()
-                      .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
+                      .domain([0, buckets - 1, d3.max(data, function (d) { return d.val; })])
+                      //.domain([0, 40])
                       .range(colors);
 
                   var svg = d3.select("#chart").append("svg")
@@ -113,7 +115,7 @@ $page = "heatmap";
                       .attr("height", height + margin.top + margin.bottom)
                       .append("g")
                       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+                  /*
                   var dayLabels = svg.selectAll(".dayLabel")
                       .data(days)
                       .enter().append("text")
@@ -123,22 +125,24 @@ $page = "heatmap";
                         .style("text-anchor", "end")
                         .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
                         .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+                  */
 
-                  var timeLabels = svg.selectAll(".timeLabel")
-                      .data(times)
+                  // sun - sat
+                  var dayLabels = svg.selectAll(".dayLabel")
+                      .data(days)
                       .enter().append("text")
                         .text(function(d) { return d; })
                         .attr("x", function(d, i) { return i * gridSize; })
                         .attr("y", 0)
                         .style("text-anchor", "middle")
                         .attr("transform", "translate(" + gridSize / 2 + ", -6)")
-                        .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+                        .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "dayLabel mono axis axis-worktime" : "dayLabel mono axis"); });
 
                   var heatMap = svg.selectAll(".hour")
                       .data(data)
                       .enter().append("rect")
-                      .attr("x", function(d) { return (d.hour - 1) * gridSize; })
-                      .attr("y", function(d) { return (d.day - 1) * gridSize; })
+                      .attr("x", function(d) { return (d.day - 1) * gridSize; })
+                      .attr("y", function(d) { return (d.week - 1) * gridSize; })
                       .attr("rx", 4)
                       .attr("ry", 4)
                       .attr("class", "hour bordered")
@@ -147,10 +151,11 @@ $page = "heatmap";
                       .style("fill", colors[0]);
 
                   heatMap.transition().duration(1000)
-                      .style("fill", function(d) { return colorScale(d.value); });
+                      .style("fill", function(d) { return colorScale(d.val); });
 
-                  heatMap.append("title").text(function(d) { return d.value; });
-                      
+                  heatMap.append("title").text(function(d) { return d.val; });
+                 
+                  
                   var legend = svg.selectAll(".legend")
                       .data([0].concat(colorScale.quantiles()), function(d) { return d; })
                       .enter().append("g")
@@ -168,7 +173,11 @@ $page = "heatmap";
                     .text(function(d) { return "≥ " + Math.round(d); })
                     .attr("x", function(d, i) { return legendElementWidth * i; })
                     .attr("y", height + gridSize);
-              });
+                    
+              }
+
+              //makeHeatmap(heatmapArray);
+
               </script>
             </div>
           </div>
@@ -183,6 +192,8 @@ $page = "heatmap";
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
     <script src="js/docs.min.js"></script>
-    <script src="js/index.js"></script>
+    <script src="js/jquery-csv.js"></script>
+    <script src="js/parse.js"></script>
+    <!--<script src="js/index.js"></script>-->
   </body>
 </html>
